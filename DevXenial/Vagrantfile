@@ -1,0 +1,119 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+module OS
+  def OS.windows?
+    (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+  end
+
+  def OS.mac?
+    (/darwin/ =~ RUBY_PLATFORM) != nil
+  end
+
+  def OS.unix?
+    !OS.windows?
+  end
+
+  def OS.linux?
+    OS.unix? and not OS.mac?
+  end
+end
+
+if Vagrant::VERSION < "1.8.1"
+  puts "This Vagrant environment requires Vagrant 1.8.0 or higher."
+  puts "See: https://www.vagrantup.com/downloads.html"
+  exit 1
+end
+unless OS.unix? && Vagrant.has_plugin?("vagrant-nfs_guest")
+  puts "This Vagrant environment requires the 'vagrant-nfs_guest' plugin."
+  puts "Please run `vagrant plugin install vagrant-nfs_guest` and then run this command again."
+  exit 1
+end
+
+Vagrant.configure(2) do |config|
+
+  config.ssh.forward_agent = true
+
+  # start with a Ubuntu install
+  config.vm.box = "ubuntu/xenial64"
+
+  # enable package manager caching (requires vagrant-cachier)
+  # config.cache.scope = :box
+
+  # configure root user .profile to avoid 'stdin: is not a tty' messages
+  # see https://github.com/mitchellh/vagrant/issues/1673
+  config.vm.provision "configure-root-profile", type: "shell" do |s|
+    s.privileged = false
+    s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+  end
+
+  # configure ubuntu user .profile
+  config.vm.provision "configure-user-profile", type: "shell", path: "bootstrap-user-profile.sh", privileged: false
+
+  # TODO: What is this required for
+  if File.exist? File.join(ENV['HOME'], '/.gitconfig')
+    config.vm.provision :file, source: "~/.gitconfig", destination: ".gitconfig"
+  end
+
+  # install various packages
+  config.vm.provision "bootstrap-root", type: "shell", path: "bootstrap-root.sh", args: (OS.windows? ? 'win' : 'unix')
+  config.vm.provision "bootstrap-user", type: "shell", path: "bootstrap-user.sh", privileged: false, args: (OS.windows? ? 'win' : 'unix')
+
+  # port-forwarding for the hyperledger docker containers
+  config.vm.network "forwarded_port", guest: 7501, host: 7501
+  config.vm.network "forwarded_port", guest: 7502, host: 7502
+  config.vm.network "forwarded_port", guest: 7503, host: 7503
+  config.vm.network "forwarded_port", guest: 7504, host: 7504
+  config.vm.network "forwarded_port", guest: 7505, host: 7505
+  config.vm.network "forwarded_port", guest: 7506, host: 7506
+  config.vm.network "forwarded_port", guest: 7507, host: 7507
+  config.vm.network "forwarded_port", guest: 7508, host: 7508
+
+  # port-forwarding for composer ui/playground
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  config.vm.network "forwarded_port", guest: 4200, host: 4200
+  config.vm.network "forwarded_port", guest: 7070, host: 7070
+
+  # port-forwarding for node-debug/node-inspector
+  config.vm.network "forwarded_port", guest: 5858, host: 5858
+
+  # port-forward for livereload
+  config.vm.network "forwarded_port", guest: 35729, host: 35729
+
+  # disable the default synced folder always tries to set up
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  if OS.mac?
+    # host only private network to support nfs comms
+    config.vm.network "private_network", ip: "192.168.40.2"
+    # reverse nfs for MAC users
+    config.vm.synced_folder File.dirname(__FILE__) + '/src', '/home/ubuntu/src', create: true, type: 'nfs_guest'
+
+  elsif OS.linux?
+    # host only private network to support nfs comms
+    config.vm.network "private_network", ip: "192.168.40.2"
+    config.vm.synced_folder File.dirname(__FILE__) + '/src', '/home/ubuntu/src', create: true, type: 'nfs_guest'
+  elsif OS.windows?
+    # reverse smb for windows most of it done in bootstrap
+    # host only private network to support smb comms
+    config.vm.network "private_network", ip: "192.168.40.2"
+  else
+    # leave sync folders as it was before for other op sys. This however may fail for npm and as such
+    # will need to be fixed by users of other operating systems
+    config.vm.synced_folder File.dirname(__FILE__) + '/src', '/home/ubuntu/src', create: true
+  end
+
+  config.vm.provider :virtualbox do |v|
+    # Allow symlinks in synced folders
+    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/ubuntu/src", "1"]
+
+    # Optionally increase memory allocated to vm (for build tasks)
+    v.memory = 6192
+  end
+
+  # allow image to use OSX VPN
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  end
+end
