@@ -60,7 +60,7 @@ apt-get purge -y nodejs
 #
 # install ruby
 #
-apt-get install ruby-dev
+apt-get install -y ruby-dev
 gem install jekyll
 gem install jekyll-sitemap
 gem install redcarpet

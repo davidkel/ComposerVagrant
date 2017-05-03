@@ -24,7 +24,7 @@ if Vagrant::VERSION < "1.8.1"
   puts "See: https://www.vagrantup.com/downloads.html"
   exit 1
 end
-unless OS.unix? && Vagrant.has_plugin?("vagrant-nfs_guest")
+if OS.unix? && !Vagrant.has_plugin?("vagrant-nfs_guest")
   puts "This Vagrant environment requires the 'vagrant-nfs_guest' plugin."
   puts "Please run `vagrant plugin install vagrant-nfs_guest` and then run this command again."
   exit 1
@@ -77,6 +77,9 @@ Vagrant.configure(2) do |config|
 
   # port-forwarding for node-debug/node-inspector
   config.vm.network "forwarded_port", guest: 5858, host: 5858
+
+  # port-forwarding for jekyll
+  config.vm.network "forwarded_port", guest: 4000, host: 4000
 
   # port-forward for livereload
   config.vm.network "forwarded_port", guest: 35729, host: 35729
