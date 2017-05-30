@@ -2,25 +2,42 @@
 #
 # add repositories for git, docker and chrome
 #
-add-apt-repository ppa:git-core/ppa
+#add-apt-repository ppa:git-core/ppa
 
-apt-get -y install apt-transport-https ca-certificates
+#apt-get -y install apt-transport-https ca-certificates
 
 # Add new GPG key and add it to adv keychain
-apt-key adv \
-               --keyserver hkp://ha.pool.sks-keyservers.net:80 \
-               --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+#apt-key adv \
+#               --keyserver hkp://ha.pool.sks-keyservers.net:80 \
+#               --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 
 # Update where APT will search for Docker Packages
-echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" | sudo tee /etc/apt/sources.list.d/docker.list
+#echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" | sudo tee /etc/apt/sources.list.d/docker.list
 
-# apt info for chrome
+#
+# add repositories for git, docker and chrome
+#
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
+apt-get install -y --no-install-recommends \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+add-apt-repository ppa:git-core/ppa
+
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 
 apt-get update
 # Verifies APT is pulling from the correct Repository for docker
-apt-cache policy docker-engine
+#apt-cache policy docker-engine
 
 #
 # Install latest Git
@@ -52,7 +69,8 @@ apt-get install -y --no-upgrade python3-pip
 apt-get -y install linux-image-extra-$(uname -r) linux-image-extra-virtual
 
 # Install docker-engine
-apt-get -y install docker-engine=1.12.3-0~trusty
+#apt-get -y install docker-engine=1.12.3-0~trusty
+apt-get -y install docker-ce
 service docker start
 usermod -aG docker vagrant
 

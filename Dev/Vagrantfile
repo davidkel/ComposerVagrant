@@ -63,11 +63,11 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 7507, host: 7507
   config.vm.network "forwarded_port", guest: 7508, host: 7508
 
-# port-forwarding for composer ui/playground
+# port-forwarding for composer ui/playground or Rest
   config.vm.network "forwarded_port", guest: 8080, host: 8080
   config.vm.network "forwarded_port", guest: 3000, host: 3000
-  config.vm.network "forwarded_port", guest: 4200, host: 4200
-  config.vm.network "forwarded_port", guest: 7070, host: 7070
+  #config.vm.network "forwarded_port", guest: 4200, host: 4200
+  #config.vm.network "forwarded_port", guest: 7070, host: 7070
 
   # port-forwarding for node-debug/node-inspector
   config.vm.network "forwarded_port", guest: 5858, host: 5858

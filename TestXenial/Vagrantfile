@@ -46,11 +46,10 @@ Vagrant.configure(2) do |config|
   config.vm.provision "bootstrap-root", type: "shell", path: "bootstrap-root.sh"
   config.vm.provision "bootstrap-user", type: "shell", path: "bootstrap-user.sh", privileged: false
 
-  # forward ports for testing
-   #config.vm.network "forwarded_port", guest: 5858, host: 5858
-  config.vm.network "forwarded_port", guest: 4200, host: 4200
+  # forward ports for testing, Rest, playground, commented out nodejs debug port
   config.vm.network "forwarded_port", guest: 3000, host: 3000
-  config.vm.network "forwarded_port", guest: 7070, host: 7070
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  #config.vm.network "forwarded_port", guest: 5858, host: 5858
 
   # disable the default synced folder always tries to set up
   config.vm.synced_folder ".", "/vagrant", disabled: true

@@ -22,7 +22,6 @@ nvm use --delete-prefix default
 #
 npm install -g yo
 npm install -g node-inspector
-npm install -g lerna@2.0.0-beta.38
 npm install -g typings
 npm install -g bower
 npm install -g @angular/cli
