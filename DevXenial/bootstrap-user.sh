@@ -12,7 +12,7 @@ export NVM_DIR="$HOME/.nvm"
 #
 # install default nodejs version
 #
-DEFAULT_NODE_VERSION=6.9.5
+DEFAULT_NODE_VERSION=6
 nvm which $DEFAULT_NODE_VERSION >/dev/null 2>&1 || nvm install $DEFAULT_NODE_VERSION
 
 nvm alias default $DEFAULT_NODE_VERSION

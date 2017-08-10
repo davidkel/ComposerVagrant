@@ -116,3 +116,9 @@ read only = no
 EOF
 
 fi
+# make sure python 2 is available.
+COUNT="$(python -V 2>&1 | grep -c 2.)"
+if [ ${COUNT} -ne 1 ]
+then
+   sudo apt-get install -y python-minimal
+fi

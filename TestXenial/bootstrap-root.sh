@@ -54,6 +54,8 @@ apt-get purge -y nodejs
 #
 # install python 2.7 for node gyp
 #
-#apt-get install -y python2.7
-#ln -s /usr/bin/python2.7 /usr/bin/python
-apt-get install -y python-minimal
+COUNT="$(python -V 2>&1 | grep -c 2.)"
+if [ ${COUNT} -ne 1 ]
+then
+   sudo apt-get install -y python-minimal
+fi
