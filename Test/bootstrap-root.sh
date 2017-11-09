@@ -66,5 +66,5 @@ pip3 install -U urllib3
 #
 # install tested level of docker-compose (version 1.12.0 breaks the compose.yaml for v1)
 #
-curl -L "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.17.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod 755 /usr/local/bin/docker-compose

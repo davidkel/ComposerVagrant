@@ -43,7 +43,7 @@ usermod -aG docker ubuntu
 #
 # install docker compose
 #
-curl -L "https://github.com/docker/compose/releases/download/1.11.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.17.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod 755 /usr/local/bin/docker-compose
 
 #
