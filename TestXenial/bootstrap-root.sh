@@ -37,7 +37,7 @@ apt-get install -y libfontconfig
 #
 # install docker
 #
-sudo apt-get -y install docker-ce
+apt-get -y install docker-ce
 service docker start
 usermod -aG docker ubuntu
 #

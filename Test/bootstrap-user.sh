@@ -10,7 +10,7 @@ export NVM_DIR="$HOME/.nvm"
 . "$NVM_DIR/nvm.sh"
 
 #
-# install default nodejs version
+# install supported nodejs version
 #
 DEFAULT_NODE_VERSION=8
 nvm which $DEFAULT_NODE_VERSION >/dev/null 2>&1 || nvm install $DEFAULT_NODE_VERSION
