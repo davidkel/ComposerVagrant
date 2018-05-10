@@ -69,29 +69,31 @@ gem install redcarpet
 #
 # create a cache dir and get the bluemix command line
 #
-CACHE_DIR=/vagrant/cache
-if [ ! -d $CACHE_DIR ]; then
-    mkdir -p $CACHE_DIR
-fi
+#CACHE_DIR=/vagrant/cache
+#if [ ! -d $CACHE_DIR ]; then
+#    mkdir -p $CACHE_DIR
+#fi
+#CF_FILENAME="cf-cli_amd64.deb"
+#if [ -f ${CACHE_DIR}/${CF_FILENAME} ]; then
+#    echo "Using cached version of CloudFoundry command line tools: ${CF_FILENAME}"
+#else
+#    wget --progress=dot:mega "https://cli.run.pivotal.io/stable?release=debian64&source=github" -O ${CACHE_DIR}/${CF_FILENAME}
+#fi
+#dpkg -i ${CACHE_DIR}/${CF_FILENAME}
 CF_FILENAME="cf-cli_amd64.deb"
-if [ -f ${CACHE_DIR}/${CF_FILENAME} ]; then
-    echo "Using cached version of CloudFoundry command line tools: ${CF_FILENAME}"
-else
-    wget --progress=dot:mega "https://cli.run.pivotal.io/stable?release=debian64&source=github" -O ${CACHE_DIR}/${CF_FILENAME}
-fi
-dpkg -i ${CACHE_DIR}/${CF_FILENAME}
+wget --progress=dot:mega "https://cli.run.pivotal.io/stable?release=debian64&source=github" -O ${CF_FILENAME}
+dpkg -i ${CF_FILENAME}
 
 #
 # install golang
 #
-GO_FILENAME="go1.7.6.linux-amd64.tar.gz"
-if [ -f ${CACHE_DIR}/${GO_FILENAME} ]; then
-    echo "Using cached version of Go.Lang tools: ${GO_FILENAME}"
-else
-    wget --progress=dot:mega "https://storage.googleapis.com/golang/${GO_FILENAME}" -O ${CACHE_DIR}/${GO_FILENAME}
-fi
-
-tar -C /usr/local -xzf ${CACHE_DIR}/${GO_FILENAME}
+#GO_FILENAME="go1.7.6.linux-amd64.tar.gz"
+#if [ -f ${CACHE_DIR}/${GO_FILENAME} ]; then
+#    echo "Using cached version of Go.Lang tools: ${GO_FILENAME}"
+#else
+#    wget --progress=dot:mega "https://storage.googleapis.com/golang/${GO_FILENAME}" -O ${CACHE_DIR}/${GO_FILENAME}
+#fi
+#tar -C /usr/local -xzf ${CACHE_DIR}/${GO_FILENAME}
 
 #
 # install chrome and xvfb
@@ -122,3 +124,8 @@ if [ ${COUNT} -ne 1 ]
 then
    sudo apt-get install -y python-minimal
 fi
+
+# install other useful packages
+apt-get install -y libssl-dev
+apt-get install -y unzip
+apt-get install -y zip

@@ -22,6 +22,8 @@ add-apt-repository \
    $(lsb_release -cs) \
    stable"
 
+sudo apt-add-repository ppa:brightbox/ruby-ng
+
 apt-get install -y --no-install-recommends \
     apt-transport-https \
     ca-certificates \
@@ -45,7 +47,7 @@ apt-get update
 apt-get install -y git
 
 #
-# apt-get basic installs
+# install essential build tools
 #
 apt-get install -y build-essential
 
@@ -64,12 +66,14 @@ apt-get install -y --no-upgrade jq/trusty-backports
 apt-get install -y --no-upgrade python3-yaml
 apt-get install -y --no-upgrade curl
 apt-get install -y --no-upgrade python3-pip
+apt-get install -y libssl-dev
+apt-get install -y unzip
+apt-get install -y zip
 
 # Install kernel packages which allows us to use aufs storage driver
 apt-get -y install linux-image-extra-$(uname -r) linux-image-extra-virtual
 
 # Install docker-engine
-#apt-get -y install docker-engine=1.12.3-0~trusty
 apt-get -y install docker-ce
 service docker start
 usermod -aG docker vagrant
@@ -84,7 +88,6 @@ apt-get purge -y nodejs
 #
 pip3 install --upgrade pip
 pip3 install -U urllib3
-#pip3 install docker-compose
 
 #
 # install tested level of docker-compose (version 1.12.0 breaks the compose.yaml for v1)
@@ -95,29 +98,35 @@ chmod 755 /usr/local/bin/docker-compose
 #
 # create a cache dir and get the bluemix command line
 #
-CACHE_DIR=/vagrant/cache
-if [ ! -d $CACHE_DIR ]; then
-    mkdir -p $CACHE_DIR
-fi
+#CACHE_DIR=/vagrant/cache
+#if [ ! -d $CACHE_DIR ]; then
+#    mkdir -p $CACHE_DIR
+#fi
+#CF_FILENAME="cf-cli_amd64.deb"
+#if [ -f ${CACHE_DIR}/${CF_FILENAME} ]; then
+#    echo "Using cached version of CloudFoundry command line tools: ${CF_FILENAME}"
+#else
+#    wget --progress=dot:mega "https://cli.run.pivotal.io/stable?release=debian64&source=github" -O ${CACHE_DIR}/${CF_FILENAME}
+#fi
+#dpkg -i ${CACHE_DIR}/${CF_FILENAME}
+
+#
+# install cloud foundry cli
+#
 CF_FILENAME="cf-cli_amd64.deb"
-if [ -f ${CACHE_DIR}/${CF_FILENAME} ]; then
-    echo "Using cached version of CloudFoundry command line tools: ${CF_FILENAME}"
-else
-    wget --progress=dot:mega "https://cli.run.pivotal.io/stable?release=debian64&source=github" -O ${CACHE_DIR}/${CF_FILENAME}
-fi
-dpkg -i ${CACHE_DIR}/${CF_FILENAME}
+wget --progress=dot:mega "https://cli.run.pivotal.io/stable?release=debian64&source=github" -O ${CF_FILENAME}
+dpkg -i ${CF_FILENAME}
 
 #
 # install golang
 #
-GO_FILENAME="go1.7.6.linux-amd64.tar.gz"
-if [ -f ${CACHE_DIR}/${GO_FILENAME} ]; then
-    echo "Using cached version of Go.Lang tools: ${GO_FILENAME}"
-else
-    wget --progress=dot:mega "https://storage.googleapis.com/golang/${GO_FILENAME}" -O ${CACHE_DIR}/${GO_FILENAME}
-fi
-
-tar -C /usr/local -xzf ${CACHE_DIR}/${GO_FILENAME}
+# GO_FILENAME="go1.7.6.linux-amd64.tar.gz"
+# if [ -f ${CACHE_DIR}/${GO_FILENAME} ]; then
+#    echo "Using cached version of Go.Lang tools: ${GO_FILENAME}"
+# else
+#    wget --progress=dot:mega "https://storage.googleapis.com/golang/${GO_FILENAME}" -O ${CACHE_DIR}/${GO_FILENAME}
+# fi
+# tar -C /usr/local -xzf ${CACHE_DIR}/${GO_FILENAME}
 
 #
 # install chrome and xvfb
@@ -127,10 +136,10 @@ apt-get install -y xvfb google-chrome-stable
 #
 # install ruby for website testing
 #
-sudo apt-get install -y ruby2.0-dev ruby2.0
-sudo rm /usr/bin/ruby && sudo ln -s /usr/bin/ruby2.0 /usr/bin/ruby
-sudo rm -fr /usr/bin/gem && sudo ln -s /usr/bin/gem2.0 /usr/bin/gem
+sudo apt-get install -y ruby2.4 ruby2.4-dev
+sudo rm /usr/bin/ruby && sudo ln -s /usr/bin/ruby2.4 /usr/bin/ruby
+sudo rm -fr /usr/bin/gem && sudo ln -s /usr/bin/gem2.4 /usr/bin/gem
 
-gem install jekyll
+gem install sass:3.4.25 jekyll
 gem install jekyll-sitemap
 gem install redcarpet

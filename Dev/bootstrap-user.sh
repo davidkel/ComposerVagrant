@@ -12,9 +12,7 @@ export NVM_DIR="$HOME/.nvm"
 #
 DEFAULT_NODE_VERSION=8
 nvm which $DEFAULT_NODE_VERSION >/dev/null 2>&1 || nvm install $DEFAULT_NODE_VERSION
-
 nvm alias default $DEFAULT_NODE_VERSION
-
 nvm use --delete-prefix default
 
 #
