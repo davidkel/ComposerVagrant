@@ -76,7 +76,7 @@ Vagrant.configure(2) do |config|
   config.vm.provider :virtualbox do |v|
 
     # Optionally increase memory allocated to vm (for build tasks)
-    v.memory = 2048
+    v.memory = 4096
   end
 
   # allow image to use OSX VPN
